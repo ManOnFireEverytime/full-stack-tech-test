@@ -1,5 +1,5 @@
-import './bootstrap';
-import Vue from 'vue';
+import "./bootstrap";
+import Vue from "vue";
 
 /**
  * Vue Components
@@ -8,9 +8,8 @@ import Vue from 'vue';
  * page basis to reduce bundle size and prevent loading unwanted components on each page.
  *
  */
-Vue.component('BookListing', () => import('./components/BookListing.vue'));
-Vue.component('EditBook', () => import('./components/EditBook.vue'));
-
+Vue.component("BookListing", () => import("./components/BookListing.vue"));
+Vue.component("EditBook", () => import("./components/EditBook.vue"));
 
 /**
  * Bootstrapping
@@ -18,6 +17,7 @@ Vue.component('EditBook', () => import('./components/EditBook.vue'));
  * Build the Vue instance, import the Core Services at the point of creation and register all
  * of our Vue instance to the #root tag.
  */
+// import {onMounted, watchEffect} from "Vue";
 const app = new Vue({
-    el: '#app',
+    el: "#app",
 });
