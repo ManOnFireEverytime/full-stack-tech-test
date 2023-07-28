@@ -1,5 +1,5 @@
 <template>
-<div class="div">
+    <div class="div">
         <header class="hero-section">
             <div class="hero-content">
                 <h1>Book Shop</h1>
@@ -9,7 +9,12 @@
 
         <main class="main-section">
             <div class="search-bar">
-                <input type="text" placeholder="Search..." v-model="search">
+                <input
+                    type="text"
+                    v-model="query"
+                    @input="search"
+                    placeholder="Search..."
+                />
             </div>
             <table class="data-table">
                 <thead>
@@ -21,10 +26,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Sample Book 1</td>
-                        <td>Author 1</td>
-                        <td>4.5</td>
+                    <tr v-for="(book, index) in results" :key="index">
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.rating }}</td>
                         <td>
                             <div class="action-buttons">
                                 <a href="">Edit</a>
@@ -35,31 +40,53 @@
                 </tbody>
             </table>
         </main>
-</div>
-
+    </div>
 </template>
-
 <script>
-import { onMounted, watchEffect } from "Vue";
-// import Meilisearch from "meilisearch";
-    export default {
-        name: 'BookListing',
-    }
-    // import {onMounted, watchEffect} from "Vue";
-    // import Meilisearch from "meilisearch";
-    // const query = ref("");
-    // const client = ref(null);
-    // const results = ref(null);
-    // const selectedHitIndex = ref(0);
+import Meilisearch from "meilisearch";
 
-
-    // onMounted(() => {
-    //     client.value = new Meilisearch({host: "http://localhost:3000/"})
-    // });
+export default {
+    name: "BookListing",
+    data() {
+        return {
+            query: "",
+            client: null,
+            results: [],
+            allBooks: [],
+        };
+    },
+    async mounted() {
+        this.client = new Meilisearch({ host: "http://localhost:7700/" });
+        await this.fetchAllBooks(); // Fetch all books and populate allBooks
+        this.search(); // Initially, show all books
+    },
+    methods: {
+        async fetchAllBooks() {
+            // Fetch all books from the Meilisearch index
+            try {
+                const response = await this.client.index("books").search("");
+                this.allBooks = response.hits;
+            } catch (error) {
+                console.error("Error fetching books:", error);
+            }
+        },
+        async search() {
+            if (this.query) {
+                const response = await this.client
+                    .index("books")
+                    .search(this.query);
+                this.results = response.hits;
+                console.log(this.results);
+            } else {
+                // If the search query is empty, show all the books
+                this.results = this.allBooks;
+            }
+        },
+    },
+};
 </script>
 
 <style>
-/* Reset some default styles to avoid unexpected behavior */
 body,
 h1,
 p,
@@ -151,5 +178,4 @@ body {
     color: #000;
     font-weight: bold;
 }
-
 </style>
