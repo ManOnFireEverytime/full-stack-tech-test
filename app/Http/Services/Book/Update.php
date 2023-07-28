@@ -8,11 +8,19 @@ class Update
 {
     public function __invoke(array $data, Book $book): Book
     {
-        $book->update([
-            'title' => $data['title'] ?? $book->title,
-            'author' => $data['author'] ?? $book->author,
-            'rating' => $data['rating'] ?? $book->rating,
-        ]);
+        if (isset($data['title'])) {
+            $book->title = $data['title'];
+        }
+
+        if (isset($data['author'])) {
+            $book->author = $data['author'];
+        }
+
+        if (isset($data['rating'])) {
+            $book->rating = $data['rating'];
+        }
+
+        $book->save();
 
         return $book;
     }

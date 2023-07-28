@@ -3,7 +3,11 @@
         <header class="hero-section">
             <div class="hero-content">
                 <h1>Book Shop</h1>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit</p>
+                <p>
+                    Cupcake ipsum dolor sit amet croissant. I love topping candy
+                    canes sweet roll croissant caramels. Soufflé macaroon
+                    liquorice chocolate tart I love.
+                </p>
             </div>
         </header>
 
@@ -32,7 +36,7 @@
                         <td>{{ book.rating }}</td>
                         <td>
                             <div class="action-buttons">
-                                <a href="">Edit</a>
+                                <!-- <EditBook :book="book" /> -->
                                 <a href="">Delete</a>
                             </div>
                         </td>
@@ -122,6 +126,7 @@ body {
 .hero-content p {
     color: #fff;
     padding-top: 15px;
+    font-size: 16px;
 }
 /* Main Section Styles */
 .main-section {
