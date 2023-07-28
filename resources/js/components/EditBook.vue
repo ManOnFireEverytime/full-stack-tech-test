@@ -16,7 +16,9 @@
                     <h2 class="text-center text-3xl pb-10">Edit Book</h2>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Title: </label>
+                        <!-- Bind the input field to the book title -->
                         <input
+                            v-model="book.title"
                             type="text"
                             placeholder="Title"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
@@ -24,7 +26,9 @@
                     </div>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Author: </label>
+                        <!-- Bind the input field to the book author -->
                         <input
+                            v-model="book.author"
                             type="text"
                             placeholder="Author"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
@@ -32,7 +36,9 @@
                     </div>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Rating: </label>
+                        <!-- Bind the input field to the book rating -->
                         <input
+                            v-model="book.rating"
                             type="text"
                             placeholder="5"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
@@ -42,7 +48,7 @@
                 <div class="text-center">
                     <button
                         class="text-white bg-orange py-2 px-4 rounded"
-                        type="reset"
+                        type="submit"
                     >
                         Submit
                     </button>
@@ -55,5 +61,22 @@
 <script>
 export default {
     name: "EditBook",
+    props: {
+        book: {
+            type: Object,
+            required: true,
+        },
+    },
+    methods: {
+        submit() {
+            // Handle the form submission here.
+            // You can update the book data using an API or any other method.
+            console.log(this.book); // Output the book data to the console for now.
+        },
+    },
 };
 </script>
+
+<style>
+/* Your existing styles */
+</style>
