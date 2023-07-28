@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GenreController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::apiResource('/books', 'BookController');
+Route::post('/books/{book}/genres', [BookController::class, 'attachGenres']);

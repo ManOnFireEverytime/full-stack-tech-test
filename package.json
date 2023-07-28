@@ -25,6 +25,6 @@
         "laravel-mix-purgecss": "^6.0.0",
         "meilisearch": "^0.33.0",
         "vue": "^2.6.12",
-        "vue-router": "^4.2.4"
+        "vue-router": "^3.6.5"
     }
 }

@@ -16,9 +16,7 @@
                     <h2 class="text-center text-3xl pb-10">Edit Book</h2>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Title: </label>
-                        <!-- Bind the input field to the book title -->
                         <input
-                            v-model="book.title"
                             type="text"
                             placeholder="Title"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
@@ -26,9 +24,7 @@
                     </div>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Author: </label>
-                        <!-- Bind the input field to the book author -->
                         <input
-                            v-model="book.author"
                             type="text"
                             placeholder="Author"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
@@ -36,9 +32,7 @@
                     </div>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Rating: </label>
-                        <!-- Bind the input field to the book rating -->
                         <input
-                            v-model="book.rating"
                             type="text"
                             placeholder="5"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
@@ -48,7 +42,7 @@
                 <div class="text-center">
                     <button
                         class="text-white bg-orange py-2 px-4 rounded"
-                        type="submit"
+                        type="reset"
                     >
                         Submit
                     </button>
@@ -59,24 +53,37 @@
 </template>
 
 <script>
+import Meilisearch from "meilisearch";
+
 export default {
     name: "EditBook",
-    props: {
-        book: {
-            type: Object,
-            required: true,
-        },
+    data() {
+        return {
+            bookId: null, // To store the book ID from route parameters
+            bookData: null, // To store the book details fetched from the data source
+            // ... (other data properties) ...
+        };
+    },
+    async created() {
+        this.bookId = this.$route.params.id;
+        await this.fetchBookData(this.bookId);
     },
     methods: {
-        submit() {
-            // Handle the form submission here.
-            // You can update the book data using an API or any other method.
-            console.log(this.book); // Output the book data to the console for now.
+        async fetchBookData(bookId) {
+            try {
+                // Create a Meilisearch client instance
+                const client = new Meilisearch({
+                    host: "http://localhost:7700/",
+                });
+
+                // Fetch the book details using the book ID
+                const response = await client.index("books").getOne(bookId);
+                this.bookData = response;
+            } catch (error) {
+                console.error("Error fetching book details:", error);
+            }
         },
+        // ... (other methods) ...
     },
 };
 </script>
-
-<style>
-/* Your existing styles */
-</style>

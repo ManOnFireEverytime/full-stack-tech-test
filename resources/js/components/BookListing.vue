@@ -36,42 +36,26 @@
                         <td>{{ book.rating }}</td>
                         <td>
                             <div class="action-buttons">
-                                <EditBook :book="book" />
-                                <button @click="enterEditMode(book)">
-                                    Edit
-                                </button>
-
-                                <a href="">Delete</a>
+                                <button @click="onEditBook(book)">Edit</button>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <EditBook
-                v-if="editMode"
-                :book="selectedBook"
-                @submit="exitEditMode"
-            />
         </main>
     </div>
 </template>
 <script>
 import Meilisearch from "meilisearch";
-import EditBook from "./EditBook.vue";
 
 export default {
     name: "BookListing",
-    components: {
-        EditBook, // Register the EditBook component
-    },
     data() {
         return {
             query: "",
             client: null,
             results: [],
             allBooks: [],
-            editMode: false, // Add the editMode property to track the editing state
-            selectedBook: null, // Store the selected book data for editing
         };
     },
     async mounted() {
@@ -80,6 +64,10 @@ export default {
         this.search(); // Initially, show all books
     },
     methods: {
+        onEditBook(book) {
+            // Emit the custom event named 'edit-book' with the book object as data
+            this.$emit("edit-book", book);
+        },
         async fetchAllBooks() {
             // Fetch all books from the Meilisearch index
             try {
@@ -100,16 +88,6 @@ export default {
                 // If the search query is empty, show all the books
                 this.results = this.allBooks;
             }
-        },
-        enterEditMode(book) {
-            // Method to enter edit mode when "Edit" button is clicked
-            this.selectedBook = { ...book }; // Copy the book object to prevent data mutation
-            this.editMode = true; // Set editMode to true to show the EditBook component
-        },
-        exitEditMode() {
-            // Method to exit edit mode when form is submitted
-            this.selectedBook = null; // Clear the selected book data
-            this.editMode = false; // Set editMode to false to hide the EditBook component
         },
     },
 };
