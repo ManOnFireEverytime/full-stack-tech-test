@@ -23,3 +23,6 @@ Route::get('/edit', function () {
 });
 
 // Route::get('/book', BookController::class);
+
+Route::post('/books/{book}/genres', [BookController::class, 'attachGenres']);
+Route::put('/books/{book}', [BookController::class, 'update']);
