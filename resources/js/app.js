@@ -1,5 +1,5 @@
 import "./bootstrap";
-import Vue from "vue";
+// import Vue from "vue";
 
 /**
  * Vue Components
@@ -8,8 +8,6 @@ import Vue from "vue";
  * page basis to reduce bundle size and prevent loading unwanted components on each page.
  *
  */
-Vue.component("BookListing", () => import("./components/BookListing.vue"));
-Vue.component("EditBook", () => import("./components/EditBook.vue"));
 
 /**
  * Bootstrapping
@@ -17,15 +15,40 @@ Vue.component("EditBook", () => import("./components/EditBook.vue"));
  * Build the Vue instance, import the Core Services at the point of creation and register all
  * of our Vue instance to the #root tag.
  */
+// const app = new Vue({
+//     el: "#app",
+// });
+
+import Vue from "vue";
+import VueRouter from "vue-router";
+// import App from "./App.vue";
+import BookListing from "./components/BookListing.vue";
+import EditBook from "./components/EditBook.vue";
+
+Vue.component("BookListing", () => import("./components/BookListing.vue"));
+Vue.component("EditBook", () => import("./components/EditBook.vue"));
+
+Vue.use(VueRouter);
+
+const routes = [
+    {
+        path: "/",
+        component: BookListing,
+    },
+    {
+        path: "/edit/:id", // Use a dynamic parameter (e.g., id) to pass book ID to EditBook
+        name: "EditBook", // Give the route a name for easier navigation
+        component: EditBook,
+    },
+];
+
+const router = new VueRouter({
+    mode: "history",
+    routes,
+});
+
 const app = new Vue({
     el: "#app",
-    methods: {
-        // Custom event handler to handle the navigation to the EditBook component
-        onEditBook(book) {
-            // Show the EditBook component
-            this.$children = [
-                this.$createElement("EditBook", { props: { book } }),
-            ];
-        },
-    },
-});
+    router,
+    // render: (h) => h(app),
+}).$mount("#app");

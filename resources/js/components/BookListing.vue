@@ -36,7 +36,14 @@
                         <td>{{ book.rating }}</td>
                         <td>
                             <div class="action-buttons">
-                                <button @click="onEditBook(book)">Edit</button>
+                                <router-link
+                                    :to="{
+                                        name: 'EditBook',
+                                        params: { id: book.id },
+                                    }"
+                                    >Edit</router-link
+                                >
+                                <a href="">Delete</a>
                             </div>
                         </td>
                     </tr>
@@ -64,10 +71,6 @@ export default {
         this.search(); // Initially, show all books
     },
     methods: {
-        onEditBook(book) {
-            // Emit the custom event named 'edit-book' with the book object as data
-            this.$emit("edit-book", book);
-        },
         async fetchAllBooks() {
             // Fetch all books from the Meilisearch index
             try {

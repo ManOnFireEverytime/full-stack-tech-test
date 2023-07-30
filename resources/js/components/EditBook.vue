@@ -11,13 +11,14 @@
             </div>
         </div>
         <div class="w-1/5 text-left mr-auto ml-auto -mt-0 mb-0">
-            <form @submit.prevent="submit">
+            <form @submit.prevent="updateBook">
                 <div class="pt-10">
                     <h2 class="text-center text-3xl pb-10">Edit Book</h2>
                     <div class="pb-10">
                         <label class="w-20 inline-block">Title: </label>
                         <input
                             type="text"
+                            v-model="editedBook.title"
                             placeholder="Title"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
                         />
@@ -26,6 +27,7 @@
                         <label class="w-20 inline-block">Author: </label>
                         <input
                             type="text"
+                            v-model="editedBook.author"
                             placeholder="Author"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
                         />
@@ -34,6 +36,7 @@
                         <label class="w-20 inline-block">Rating: </label>
                         <input
                             type="text"
+                            v-model="editedBook.rating"
                             placeholder="5"
                             class="rounded-md border-gray-400 border-solid border-[1px] p-2 w-96"
                         />
@@ -42,7 +45,7 @@
                 <div class="text-center">
                     <button
                         class="text-white bg-orange py-2 px-4 rounded"
-                        type="reset"
+                        type="submit"
                     >
                         Submit
                     </button>
@@ -59,31 +62,62 @@ export default {
     name: "EditBook",
     data() {
         return {
-            bookId: null, // To store the book ID from route parameters
-            bookData: null, // To store the book details fetched from the data source
-            // ... (other data properties) ...
+            client: null,
+            editedBook: {
+                title: "",
+                author: "",
+                rating: "",
+            },
         };
     },
-    async created() {
-        this.bookId = this.$route.params.id;
-        await this.fetchBookData(this.bookId);
+    async mounted() {
+        this.client = new Meilisearch({ host: "http://localhost:7700/" });
+        await this.fetchBookData(); // Fetch book data and populate editedBook
     },
     methods: {
-        async fetchBookData(bookId) {
+        async fetchBookData() {
+            const bookId = this.$route.params.id.toString();
             try {
-                // Create a Meilisearch client instance
-                const client = new Meilisearch({
-                    host: "http://localhost:7700/",
-                });
+                const response = await this.client
+                    .index("books")
+                    .search(bookId, {
+                        attributesToRetrieve: ["title", "author", "rating"],
+                        limit: 1,
+                    });
 
-                // Fetch the book details using the book ID
-                const response = await client.index("books").getOne(bookId);
-                this.bookData = response;
+                if (response.hits.length > 0) {
+                    this.editedBook = response.hits[0];
+                } else {
+                    console.error("Book not found.");
+                }
             } catch (error) {
-                console.error("Error fetching book details:", error);
+                console.error("Error fetching book data:", error);
             }
         },
-        // ... (other methods) ...
+        async updateBookData(updatedBook) {
+            try {
+                // Update the book document in the Meilisearch index
+                await this.client.index("books").updateDocuments([updatedBook]);
+            } catch (error) {
+                console.error("Error updating book:", error);
+                throw error;
+            }
+        },
+        updateBook() {
+            // Submit the updated book data to Meilisearch
+            this.updateBookData(this.editedBook)
+                .then(() => {
+                    console.log(
+                        "Book data updated successfully in Meilisearch!"
+                    );
+                    // Navigate back to the book listing page after successful submission
+                    this.$router.push({ path: "/" });
+                })
+                .catch((error) => {
+                    console.error("Error updating book:", error);
+                    alert("Failed to update book, Please try again.");
+                });
+        },
     },
 };
 </script>
